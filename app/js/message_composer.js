@@ -503,6 +503,10 @@ function MessageComposer (textarea, options) {
 
 MessageComposer.autoCompleteRegEx = /(\s|^)(:|@|\/)([A-Za-z0-9\-\+\*@_]*)$/;
 
+MessageComposer.defaultCommands = [
+    {botID: 0, value: 'Hello. Welcome to instano. What would you like to buy today'}
+];
+
 
 MessageComposer.prototype.setUpInput = function () {
   if ('contentEditable' in document.body) {
@@ -758,7 +762,7 @@ MessageComposer.prototype.checkAutocomplete = function (forceFull) {
           this.hideSuggestions();
         }
       } else {
-        this.hideSuggestions();
+        this.showCommandsSuggestions(MessageComposer.defaultCommands);
       }
     }
     else if (matches[2] == ':') { // emoji
@@ -997,7 +1001,7 @@ MessageComposer.prototype.onMentionSelected = function (username) {
 }
 
 MessageComposer.prototype.onCommandSelected = function (command, isTab) {
-  if (isTab) {
+  if (isTab) { // if tab is pressed, do not send command
     if (this.richTextareaEl) {
       this.richTextareaEl.html(encodeEntities(command) + '&nbsp;');
       setRichFocus(this.richTextareaEl[0]);
