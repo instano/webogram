@@ -1,5 +1,5 @@
 /*!
- * Webogram v0.4.7 - messaging web application for MTProto
+ * Webogram v1.0.0 - messaging web application for MTProto
  * https://github.com/zhukov/webogram
  * Copyright (C) 2014 Igor Zhukov <igor.beatle@gmail.com>
  * https://github.com/zhukov/webogram/blob/master/LICENSE
@@ -19,10 +19,10 @@ Config = window.Config || {};
 */
 
 Config.App = {
-  id: 2496,
-  hash: '8da85b0d5bfe62527e5b244c209159c3',
-  version: '0.4.7',
-  domains: ['web.telegram.org', 'zhukov.github.io']
+  id: 48523,
+  hash: 'f8bb05eea6efb7d8fcc9b97ce1a3a581',
+  version: '1.0.0',
+  domains: ['instano.github.io']
 };
 
 Config.Modes = {
