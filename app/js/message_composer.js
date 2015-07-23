@@ -503,8 +503,9 @@ function MessageComposer (textarea, options) {
 
 MessageComposer.autoCompleteRegEx = /(\s|^)(:|@|\/)([A-Za-z0-9\-\+\*@_]*)$/;
 
-MessageComposer.defaultCommands = [
-    {value: 'Hello. Welcome to instano. What would you like to buy today'}
+MessageComposer.templates = [
+    {key: '@hi', value: 'Hello. Welcome to instano. What would you like to buy today'},
+    {key: '@busy', value: 'We are really busy now. contact us later'}
 ];
 
 
@@ -638,7 +639,7 @@ MessageComposer.prototype.onKeyEvent = function (e) {
       }
     }
 
-    if (checkSubmit && e.keyCode == 13) {
+    if (checkSubmit && e.keyCode == 13) { // keyCode '13' = enter
       var submit = false;
       var sendOnEnter = true;
       if (this.getSendOnEnter && !this.getSendOnEnter()) {
@@ -721,8 +722,8 @@ MessageComposer.prototype.checkAutocomplete = function (forceFull) {
     this.previousQuery = matches[0];
     var query = SearchIndexManager.cleanSearchText(matches[3]);
 
-    if (matches[2] == '@') { // mentions
-      if (this.mentions && this.mentions.index) {
+    if (matches[2] == '@') { // mentions or templates
+      if (this.mentions && this.mentions.index) { // mentions
         if (query.length) {
           var foundObject = SearchIndexManager.search(query, this.mentions.index);
           var foundUsers = [];
@@ -743,7 +744,16 @@ MessageComposer.prototype.checkAutocomplete = function (forceFull) {
         }
       } else { // templates
         console.log('showing templates');
-        this.showTemplateSuggestions(MessageComposer.defaultCommands);
+        if (query.length) {
+          var foundTemplates = [];
+          for (var i = 0; i < MessageComposer.templates.length; i++) {
+            if(MessageComposer.templates[i].key.indexOf(query) > -1) // template contains query
+              foundTemplates.push(MessageComposer.templates[i]);
+          }
+          this.showTemplateSuggestions(foundTemplates);
+        } else {
+          this.showTemplateSuggestions(MessageComposer.templates); // show all
+        }
       }
     }
     else if (!matches[1] && matches[2] == '/') { // commands
@@ -1006,11 +1016,9 @@ MessageComposer.prototype.onMentionSelected = function (username) {
 }
 
 MessageComposer.prototype.onTemplateSelected = function (template, isTab) {
-  console.log('.onTemplateSelected ' + template + isTab);
   if (this.richTextareaEl) {
     this.richTextareaEl.html(encodeEntities(template) + '&nbsp;');
     setRichFocus(this.richTextareaEl[0]);
-    console.log('setting template ' + template);
   }
   else {
     var textarea = this.textareaEl[0];
@@ -1018,7 +1026,6 @@ MessageComposer.prototype.onTemplateSelected = function (template, isTab) {
     setFieldSelection(textarea);
   }
   if (!isTab) { // if tab is pressed, do not send template
-    console.log('sending template ' + template);
     this.onMessageSubmit(template);
   }
 
@@ -1156,6 +1163,9 @@ MessageComposer.prototype.showMentionSuggestions = function (users) {
   });
 }
 
+/**
+ * basically pirated from MessageComposer.prototype.showCommandsSuggestions with some cosmetic changes
+ */
 MessageComposer.prototype.showTemplateSuggestions = function (templates) {
   var html = [];
   var template;
@@ -1164,7 +1174,7 @@ MessageComposer.prototype.showTemplateSuggestions = function (templates) {
 
   for (i = 0; i < count; i++) {
     template = templates[i];
-    html.push('<li><a class="composer_command_option" data-template="' + encodeEntities(template.value) + '"><span class="composer_command_value">' + encodeEntities(template.value) + '</span></a></li>');
+    html.push('<li><a class="composer_command_option" data-template="' + encodeEntities(template.value) + '"><span class="composer_command_value">' + encodeEntities(template.key) + '</span><span class="composer_command_desc">' + encodeEntities(template.value) + '</span></a></li>');
   }
 
   this.renderSuggestions(html);
