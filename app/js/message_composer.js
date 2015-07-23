@@ -504,8 +504,15 @@ function MessageComposer (textarea, options) {
 MessageComposer.autoCompleteRegEx = /(\s|^)(:|@|\/)([A-Za-z0-9\-\+\*@_]*)$/;
 
 MessageComposer.templates = [
-    {key: '@hi', value: 'Hello. Welcome to instano. What would you like to buy today'},
-    {key: '@busy', value: 'We are really busy now. contact us later'}
+    {key: '@welcome', value: 'Hello, Welcome to Instano! :smiley: What would you like to order today?'},
+    {key: '@busy', value: 'Would you mind holding on for a few minutes while I am checking this information for you'},
+    {key: '@hold', value: 'Would you mind holding on for a few minutes while I am checking this information for you'},
+    {key: '@location', value: 'Well, we are operating only in Bangalore as of now and shortly expanding in all the major cities in India.'},
+    {key: '@time', value: 'We are operating from 9AM - 11PM as of now. Soon we will be open 24hours!'},
+    {key: '@instano', value: 'Instano is a chat based request network which helps you place orders, initiate pick and drops, book any services, just by sending a text!'},
+    {key: '@badexperience', value: 'We are really sorry to hear about your bad experience with us. We always strive to make our customers experience as great as possible. We will take appropriate steps and ensure that this never happens again. Stay with us.'},
+    {key: '@charges', value: 'It starts from ₹30 as minimum convenience charge and will vary based on your order and the delivery location.'},
+    {key: '@delay', value: "Hello! We apologize for the delay. :pensive: We have plenty of orders pouring in at the moment so time's pressing hard. Just a little patience! Your order would reach you in a while! :smiley:"}
 ];
 
 
@@ -743,7 +750,6 @@ MessageComposer.prototype.checkAutocomplete = function (forceFull) {
           this.hideSuggestions();
         }
       } else { // templates
-        console.log('showing templates');
         if (query.length) {
           var foundTemplates = [];
           for (var i = 0; i < MessageComposer.templates.length; i++) {
@@ -1117,6 +1123,12 @@ MessageComposer.prototype.renderSuggestions = function (html) {
   this.scroller.reinit();
   this.updatePosition();
   this.autocompleteShown = true;
+
+  // automatically select the top element
+  var childNodes = this.autoCompleteEl[0].childNodes;
+  var nextWrap = childNodes[0];
+  this.scroller.scrollToNode(nextWrap);
+  $(nextWrap).find('a').addClass('composer_autocomplete_option_active');
 }
 
 MessageComposer.prototype.showEmojiSuggestions = function (codes) {
