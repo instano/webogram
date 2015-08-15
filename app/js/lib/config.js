@@ -1,5 +1,5 @@
 /*!
- * Webogram v1.0.0 - messaging web application for MTProto
+ * Webogram v1.1.0 - messaging web application for MTProto
  * https://github.com/zhukov/webogram
  * Copyright (C) 2014 Igor Zhukov <igor.beatle@gmail.com>
  * https://github.com/zhukov/webogram/blob/master/LICENSE
@@ -21,7 +21,7 @@ Config = window.Config || {};
 Config.App = {
   id: 48523,
   hash: 'f8bb05eea6efb7d8fcc9b97ce1a3a581',
-  version: '1.0.0',
+  version: '1.1.0',
   domains: ['instano.github.io']
 };
 
